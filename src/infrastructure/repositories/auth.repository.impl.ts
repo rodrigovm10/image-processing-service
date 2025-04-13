@@ -1,4 +1,4 @@
-import { AuthDatasource } from '../../domain/datasources/auth.repository'
+import { AuthDatasource } from '../../domain/datasources/auth.datasource'
 import { LoginUserDto } from '../../domain/dto/auth/login.dto'
 import { RegisterUserDto } from '../../domain/dto/auth/register.dto'
 import { UserEntity } from '../../domain/entities/user.entity'

@@ -1,12 +1,10 @@
-import { log } from 'node:util'
-import { BcryptAdapter } from '../../config/bcrypt.adapter'
 import { UserModel } from '../../data/models/user.model'
-import { AuthDatasource } from '../../domain/datasources/auth.repository'
+import { BcryptAdapter } from '../../config/bcrypt.adapter'
 import { LoginUserDto } from '../../domain/dto/auth/login.dto'
-import { RegisterUserDto } from '../../domain/dto/auth/register.dto'
 import { UserEntity } from '../../domain/entities/user.entity'
 import { CustomError } from '../../domain/errors/custom.error'
-import { JwtAdapter } from '../../config/jwt-adapter'
+import { RegisterUserDto } from '../../domain/dto/auth/register.dto'
+import { AuthDatasource } from '../../domain/datasources/auth.datasource'
 
 export class AuthDatasourceImpl implements AuthDatasource {
   public async loginUser(loginUserDto: LoginUserDto): Promise<UserEntity> {

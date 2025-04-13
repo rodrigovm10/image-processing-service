@@ -1,7 +1,7 @@
 import { CustomError } from '../errors/custom.error'
 
 export class UserEntity {
-  constructor(public id: string, public username: string, public password: string) {}
+  private constructor(public id: string, public username: string, public password: string) {}
 
   public static fromObject(object: { [key: string]: any }) {
     const { id, _id, username, password } = object
