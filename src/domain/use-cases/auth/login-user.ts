@@ -1,6 +1,6 @@
+import { LoginUserDto } from '../../dto/auth/login.dto'
 import { UserEntity } from '../../entities/user.entity'
 import { CustomError } from '../../errors/custom.error'
-import { RegisterUserDto } from '../../dto/auth/register.dto'
 import { AuthRepository } from '../../repositories/auth.repository'
 
 interface UserToken {
@@ -8,28 +8,25 @@ interface UserToken {
   token: string
 }
 
-interface RegisterUserUseCase {
-  execute(registerUserDto: RegisterUserDto): Promise<UserToken>
+interface LoginUserUseCase {
+  execute(loginUserDto: LoginUserDto): Promise<UserToken>
 }
 
 type SignToken = (payload: Object, duration?: string) => Promise<string | null>
 
-export class RegisterUser implements RegisterUserUseCase {
+export class LoginUser implements LoginUserUseCase {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly signToken: SignToken
   ) {}
 
-  public async execute(registerUserDto: RegisterUserDto): Promise<UserToken> {
-    const user = await this.authRepository.registerUser(registerUserDto)
+  public async execute(loginUserDto: LoginUserDto): Promise<UserToken> {
+    const user = await this.authRepository.loginUser(loginUserDto)
 
     const token = await this.signToken({ id: user.id })
 
-    if (!token) throw CustomError.internalServer('Error generating token')
+    if (!token) throw CustomError.internalServer('Error generatin token')
 
-    return {
-      user,
-      token,
-    }
+    return { user, token }
   }
 }
