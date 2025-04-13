@@ -1,9 +1,11 @@
 import { Request, Response } from 'express'
+import { UploadedFile } from 'express-fileupload'
 
 export class ImagesController {
   constructor() {}
 
   public saveImage = (req: Request, res: Response) => {
+    const file = req.body.files.at(0) as UploadedFile
     res.json('Saving image...')
   }
 

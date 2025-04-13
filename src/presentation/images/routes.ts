@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { ImagesController } from './controller'
-import { AuthMiddleware } from './middleware/auth.middleware'
+import { AuthMiddleware } from '../middleware/auth.middleware'
+import { ImageUploadMiddleware } from '../middleware/image-upload.middleware'
 
 export class ImagesRoutes {
   public static get routes(): Router {
@@ -13,8 +14,12 @@ export class ImagesRoutes {
     router.get('/', imagesController.retrieveImages)
     router.get('/:id', imagesController.retrieveImages)
 
-    router.post('/', imagesController.saveImage)
-    router.post('/:id/transform', imagesController.transformImage)
+    router.post('/', [ImageUploadMiddleware.containFile], imagesController.saveImage)
+    router.post(
+      '/:id/transform',
+      [ImageUploadMiddleware.containFile],
+      imagesController.transformImage
+    )
 
     return router
   }
