@@ -4,6 +4,7 @@ import { ImageRepository } from '../../domain/repositories/image.repository'
 import { MongoImageDatasource } from '../datasources/mongo-image.datasource'
 import { S3ImageDatasource } from '../datasources/s3-image.datasource'
 import { CreateImageDto } from '../../domain/dto/images/create-image.dto'
+import { GetImageDto } from '../../domain/dto/images/get-image.dto'
 
 export class ImageRepositoryImpl implements ImageRepository {
   constructor(
@@ -15,8 +16,8 @@ export class ImageRepositoryImpl implements ImageRepository {
     return this.mongoImageDatasource.getAll(userId)
   }
 
-  public findById(imageId: string): Promise<ImageEntity> {
-    return this.mongoImageDatasource.findById(imageId)
+  public findById(getImageDto: GetImageDto): Promise<ImageEntity> {
+    return this.mongoImageDatasource.findById(getImageDto)
   }
 
   public async create(createImageDto: CreateImageDto): Promise<ImageEntity> {

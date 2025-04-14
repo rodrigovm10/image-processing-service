@@ -17,7 +17,7 @@ export class ImagesRoutes {
     const imagesController = new ImagesController(imageRepository)
 
     router.get('/:userId', imagesController.retrieveImages)
-    router.get('/:imageId', imagesController.retrieveImages)
+    router.get('/:userId/:imageId', imagesController.retrieveImage)
 
     router.post(
       '/',

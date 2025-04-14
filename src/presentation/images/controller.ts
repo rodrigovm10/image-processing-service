@@ -6,6 +6,8 @@ import { CustomError } from '../../domain/errors/custom.error'
 import { CreateImageDto } from '../../domain/dto/images/create-image.dto'
 import { Validators } from '../../config/validators'
 import { RetrieveAllImages } from '../../domain/use-cases/images/retrieve-all-images'
+import { GetImageDto } from '../../domain/dto/images/get-image.dto'
+import { RetrieveImage } from '../../domain/use-cases/images/retrieve-image'
 
 export class ImagesController {
   constructor(private readonly imageRepository: ImageRepository) {}
@@ -28,7 +30,7 @@ export class ImagesController {
     })
 
     if (error) {
-      res.status(404).json({ error })
+      res.status(400).json({ error })
       return
     }
 
@@ -42,7 +44,18 @@ export class ImagesController {
     res.json('Transforming image...')
   }
 
-  public retrieveImage = (req: Request, res: Response) => {}
+  public retrieveImage = (req: Request, res: Response) => {
+    const [error, getImageDto] = GetImageDto.create(req.params)
+
+    if (error) {
+      res.status(400).json({ error })
+    }
+
+    new RetrieveImage(this.imageRepository)
+      .execute(getImageDto!)
+      .then(image => res.json(image))
+      .catch(error => this.handleError(res, error))
+  }
 
   public retrieveImages = (req: Request, res: Response) => {
     const { userId } = req.params
