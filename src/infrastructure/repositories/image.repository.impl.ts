@@ -1,22 +1,34 @@
-import { UploadedFile } from 'express-fileupload'
 import { TransformDto } from '../../domain/dto/images/transform.dto'
 import { ImageEntity } from '../../domain/entities/image.entity'
 import { ImageRepository } from '../../domain/repositories/image.repository'
-import { ImageDatasource } from '../../domain/datasources/image-database.datasource'
+import { MongoImageDatasource } from '../datasources/mongo-image.datasource'
+import { S3ImageDatasource } from '../datasources/s3-image.datasource'
+import { CreateImageDto } from '../../domain/dto/images/create-image.dto'
+import { UploadedFile } from 'express-fileupload'
 
 export class ImageRepositoryImpl implements ImageRepository {
-  constructor(private readonly imageDatasource: ImageDatasource) {}
+  constructor(
+    private readonly mongoImageDatasource: MongoImageDatasource,
+    private readonly s3ImageDatasource: S3ImageDatasource
+  ) {}
 
   public getAll(): Promise<ImageEntity[]> {
-    return this.imageDatasource.getAll()
+    return this.mongoImageDatasource.getAll()
   }
+
   public findById(imageId: string): Promise<ImageEntity> {
-    return this.imageDatasource.findById(imageId)
+    return this.mongoImageDatasource.findById(imageId)
   }
-  public create(file: UploadedFile): Promise<ImageEntity> {
-    return this.imageDatasource.create(file)
+
+  public async create(createImageDto: CreateImageDto): Promise<ImageEntity> {
+    const { file, user } = createImageDto
+
+    const imageUrl = await this.s3ImageDatasource.upload(file)
+
+    return this.mongoImageDatasource.save(imageUrl, user)
   }
+
   public transform(imageId: string, transformDto: TransformDto): Promise<ImageEntity> {
-    return this.imageDatasource.transform(imageId, transformDto)
+    throw Error('Method not implemented')
   }
 }
