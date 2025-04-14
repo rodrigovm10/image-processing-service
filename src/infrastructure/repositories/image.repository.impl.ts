@@ -4,7 +4,6 @@ import { ImageRepository } from '../../domain/repositories/image.repository'
 import { MongoImageDatasource } from '../datasources/mongo-image.datasource'
 import { S3ImageDatasource } from '../datasources/s3-image.datasource'
 import { CreateImageDto } from '../../domain/dto/images/create-image.dto'
-import { UploadedFile } from 'express-fileupload'
 
 export class ImageRepositoryImpl implements ImageRepository {
   constructor(
@@ -12,8 +11,8 @@ export class ImageRepositoryImpl implements ImageRepository {
     private readonly s3ImageDatasource: S3ImageDatasource
   ) {}
 
-  public getAll(): Promise<ImageEntity[]> {
-    return this.mongoImageDatasource.getAll()
+  public getAll(userId: string): Promise<ImageEntity[]> {
+    return this.mongoImageDatasource.getAll(userId)
   }
 
   public findById(imageId: string): Promise<ImageEntity> {

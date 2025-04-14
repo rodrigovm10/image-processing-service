@@ -16,15 +16,17 @@ export class ImagesRoutes {
 
     const imagesController = new ImagesController(imageRepository)
 
-    router.use(AuthMiddleware.validateJWT)
+    router.get('/:userId', imagesController.retrieveImages)
+    router.get('/:imageId', imagesController.retrieveImages)
 
-    router.get('/', imagesController.retrieveImages)
-    router.get('/:id', imagesController.retrieveImages)
-
-    router.post('/', [ImageUploadMiddleware.containFile], imagesController.saveImage)
+    router.post(
+      '/',
+      [ImageUploadMiddleware.containFile, AuthMiddleware.validateJWT],
+      imagesController.saveImage
+    )
     router.post(
       '/:id/transform',
-      [ImageUploadMiddleware.containFile],
+      [ImageUploadMiddleware.containFile, AuthMiddleware.validateJWT],
       imagesController.transformImage
     )
 

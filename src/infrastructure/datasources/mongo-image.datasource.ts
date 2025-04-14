@@ -1,12 +1,19 @@
 import { ImageModel } from '../../data/models/image.model'
 import { CustomError } from '../../domain/errors/custom.error'
 import { ImageEntity } from '../../domain/entities/image.entity'
-import { CreateImageDto } from '../../domain/dto/images/create-image.dto'
 import { ImageDatabaseDatasource } from '../../domain/datasources/image-database.datasource'
 
 export class MongoImageDatasource implements ImageDatabaseDatasource {
-  public getAll(): Promise<ImageEntity[]> {
-    throw new Error('Method not implemented.')
+  public async getAll(userId: string): Promise<ImageEntity[]> {
+    try {
+      const images = await ImageModel.find()
+
+      if (!images) throw CustomError.notFound('There is not images for this user')
+
+      return images.map(ImageEntity.fromObject)
+    } catch (error) {
+      throw CustomError.internalServer(String(error))
+    }
   }
 
   public findById(id: string): Promise<ImageEntity> {

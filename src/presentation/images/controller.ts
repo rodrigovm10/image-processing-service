@@ -4,6 +4,8 @@ import { ImageRepository } from '../../domain/repositories/image.repository'
 import { SaveImage } from '../../domain/use-cases/images/save-image'
 import { CustomError } from '../../domain/errors/custom.error'
 import { CreateImageDto } from '../../domain/dto/images/create-image.dto'
+import { Validators } from '../../config/validators'
+import { RetrieveAllImages } from '../../domain/use-cases/images/retrieve-all-images'
 
 export class ImagesController {
   constructor(private readonly imageRepository: ImageRepository) {}
@@ -40,11 +42,19 @@ export class ImagesController {
     res.json('Transforming image...')
   }
 
-  public retrieveImage = (req: Request, res: Response) => {
-    res.json('Retrieving image...')
-  }
+  public retrieveImage = (req: Request, res: Response) => {}
 
   public retrieveImages = (req: Request, res: Response) => {
-    res.json('Retrieving images...')
+    const { userId } = req.params
+
+    if (!Validators.isMongoId(userId)) {
+      res.status(400).json({ error: 'Invalid user ID' })
+      return
+    }
+
+    new RetrieveAllImages(this.imageRepository)
+      .execute(userId)
+      .then(images => res.json(images))
+      .catch(error => this.handleError(res, error))
   }
 }
